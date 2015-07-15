@@ -20,6 +20,9 @@ while($row=$result->fetch()) {
    //update status to waiting
    $insert = $dbaccess->prepare("insert into jobdb (name, status, proA) values('model','waiting',".$proid.")");
    $insert->execute();
+   $jobid_query = $dbaccess->prepare("select max(job_id) from jobdb");
+   $jobid_query->execute();
+   $jobid = $jobid_query->fetch();
    //create ali file
    $f_ali = fopen($folderPath."/".$proid."ali", "w");
    $header = ">P1;".$proid."\n";
@@ -41,6 +44,6 @@ while($row=$result->fetch()) {
    }
    fclose($distance);   
    //push job
-   system("gsub submitSingle.sh ".$folderPath." ".$proid);
+   system("gsub submitSingle.sh ".$folderPath." ".$proid." ".$jobid);
 }
 ?>

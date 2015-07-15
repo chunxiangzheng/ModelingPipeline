@@ -18,6 +18,9 @@ while($row=$result->fetch()) {
    //update status to waiting
    $insert = $dbaccess->prepare("insert into jobdb (name, status, proA, proB) values('docking','waiting',".$proA.",".$proB.")");
    $insert->execute();
+   $jobid_query = $dbaccess->prepare('select max(job_id) from jobdb');
+   $jobid_query->execute();
+   $jobid = $jobid_query->fetch();
    //cp pdb files
    system("cp /var/www/html/xlinkdb/pdb/".$proA.".pdb ".$folderPath."/a.pdb");
    system("cp /var/www/html/xlinkdb/pdb/".$proB.".pdb ".$folderPath."/b.pdb");
@@ -35,6 +38,6 @@ while($row=$result->fetch()) {
    }
    fclose($distance);
    //push job
-   system("gsub submitComplex.sh ".$folderPath);
+   system("gsub submitComplex.sh ".$folderPath." ".$folderName." ".$jobid);
 }
 ?>

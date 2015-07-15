@@ -1,17 +1,17 @@
 from modeller import *
+import sys
+import os
 
+if (len(sys.argv) < 2):
+	return
 log.verbose()
 env = environ()
 
+os.chdir(sys.argv[0])
 #-- Prepare the input files
 
 #-- Read in the sequence database
 sdb = sequence_db(env)
-sdb.read(seq_database_file='pdb_95.pir', seq_database_format='PIR',
-	 chains_list='ALL', minmax_db_seq_len=(30, 4000), clean_sequences=True)
-#-- Write the sequence database in binary form
-sdb.write(seq_database_file='pdb_95.bin', seq_database_format='BINARY',
-	  chains_list='ALL')
 
 #-- Now, read in the binary database
 sdb.read(seq_database_file='pdb_95.bin', seq_database_format='BINARY',
@@ -19,7 +19,7 @@ sdb.read(seq_database_file='pdb_95.bin', seq_database_format='BINARY',
 
 #-- Read in the target sequence/alignment
 aln = alignment(env)
-aln.append(file='B7I876.ali', alignment_format='PIR', align_codes='ALL')
+aln.append(file=sys.argv[1] + '.ali', alignment_format='PIR', align_codes='ALL')
 
 #-- Convert the input sequence/alignment into
 #   profile format
@@ -38,3 +38,5 @@ aln = prf.to_alignment()
 
 #-- Write out the alignment file
 aln.write(file='build_profile.ali', alignment_format='PIR')
+
+
